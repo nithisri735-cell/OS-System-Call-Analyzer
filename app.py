@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, jsonify, request, send_file
 import json
 import os
@@ -6,7 +7,8 @@ from report_generator import generate_report
 
 app = Flask(__name__)
 
-ANALYSIS_FILE = "data/analysis.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ANALYSIS_FILE = os.path.join(BASE_DIR, "data", "analysis.json")
 
 PROGRAMS = {
     "normal": "normal",
@@ -33,17 +35,12 @@ def load_analysis():
 
 @app.route("/")
 def home():
-    analysis = load_analysis()
-    return render_template(
-        "index.html",
-        analysis=analysis
-    )
+    return render_template("index.html", analysis=load_analysis())
 
 
 @app.route("/run", methods=["POST"])
 def run_analysis():
-
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
     program = data.get("program")
 
     if program not in PROGRAMS:
@@ -53,34 +50,39 @@ def run_analysis():
         }), 400
 
     program_name = PROGRAMS[program]
-
-    trace_file = f"traces/{program_name}.log"
+    trace_file = os.path.join(BASE_DIR, "traces", f"{program_name}.log")
+    executable = os.path.join(BASE_DIR, "test_programs", program_name)
 
     try:
-
-        # Run strace
         result = subprocess.run(
-            [
-                "strace",
-                "-o",
-                trace_file,
-                f"./{program_name}"
-            ],
-            cwd="test_programs",
+            ["strace", "-o", trace_file, executable],
+            cwd=BASE_DIR,
             capture_output=True,
-            text=True
+            text=True,
+            timeout=10,
+            check=False
         )
 
-        # Run analyzer
-        subprocess.run(
-            [
-                "python3",
-                "analyzer.py",
-                trace_file
-            ],
+        if not os.path.exists(trace_file):
+            return jsonify({
+                "success": False,
+                "message": "System-call trace was not created."
+            }), 500
+
+        analysis_result = subprocess.run(
+            ["python3", os.path.join(BASE_DIR, "analyzer.py"), trace_file],
+            cwd=BASE_DIR,
             capture_output=True,
-            text=True
+            text=True,
+            timeout=10,
+            check=False
         )
+
+        if analysis_result.returncode != 0:
+            return jsonify({
+                "success": False,
+                "message": analysis_result.stderr or "Analysis failed."
+            }), 500
 
         return jsonify({
             "success": True,
@@ -88,11 +90,17 @@ def run_analysis():
             "output": result.stderr
         })
 
-    except Exception as e:
-
+    except subprocess.TimeoutExpired:
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Analysis timed out."
+        }), 504
+
+    except (OSError, subprocess.SubprocessError) as error:
+        app.logger.exception("Failed to run analysis")
+        return jsonify({
+            "success": False,
+            "message": str(error)
         }), 500
 
 
@@ -100,28 +108,27 @@ def run_analysis():
 def api_analysis():
     return jsonify(load_analysis())
 
+
 @app.route("/generate-report")
 def generate_report_route():
-
     try:
         report_file = generate_report()
-
         return send_file(
             report_file,
             as_attachment=True,
             download_name="analysis_report.txt"
         )
-
-    except Exception as e:
-
+    except Exception:
+        app.logger.exception("Report generation failed")
         return jsonify({
             "success": False,
-            "message": str(e)
+            "message": "Could not generate the report."
         }), 500
+
 
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
-        port=5000,
-        debug=True
+        port=int(os.environ.get("PORT", 5000)),
+        debug=False
     )
