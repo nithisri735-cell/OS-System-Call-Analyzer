@@ -1,0 +1,40 @@
+execve("./permission_error", ["./permission_error"], 0x7ffc52a987f0 /* 57 vars */) = 0
+brk(NULL)                               = 0x557343f39000
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7efc8e029000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=112602, ...}) = 0
+mmap(NULL, 112602, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7efc8e00d000
+close(3)                                = 0
+openat(AT_FDCWD, "/usr/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\340\241\2\0\0\0\0\0"..., 832) = 832
+pread64(3, "\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0"..., 840, 64) = 840
+fstat(3, {st_mode=S_IFREG|0755, st_size=2014248, ...}) = 0
+pread64(3, "\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0"..., 840, 64) = 840
+mmap(NULL, 2055568, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7efc8de17000
+mmap(0x7efc8de3f000, 1474560, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x28000) = 0x7efc8de3f000
+mmap(0x7efc8dfa7000, 339968, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x190000) = 0x7efc8dfa7000
+mmap(0x7efc8dffa000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1e3000) = 0x7efc8dffa000
+mmap(0x7efc8e000000, 52624, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7efc8e000000
+close(3)                                = 0
+mmap(NULL, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7efc8de14000
+arch_prctl(ARCH_SET_FS, 0x7efc8de14740) = 0
+set_tid_address(0x7efc8de14d68)         = 20440
+set_robust_list(0x7efc8de14a20, 24)     = 0
+rseq({cpu_id_start=0, cpu_id=RSEQ_CPU_ID_UNINITIALIZED, rseq_cs=NULL, flags=0, node_id=0, mm_cid=0, slice_ctrl={request=0, granted=0, __reserved=0}, __reserved=0}, 33, 0, 0x53053053) = 0
+mprotect(0x7efc8dffa000, 16384, PROT_READ) = 0
+mprotect(0x55731c692000, 4096, PROT_READ) = 0
+mprotect(0x7efc8e068000, 8192, PROT_READ) = 0
+prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+getrandom("\xd1\xdc\xbc\xc5\x55\x7d\x40\x44", 8, GRND_NONBLOCK) = 8
+munmap(0x7efc8e00d000, 112602)          = 0
+brk(NULL)                               = 0x557343f39000
+brk(0x557343f5a000)                     = 0x557343f5a000
+openat(AT_FDCWD, "protected.txt", O_RDONLY) = -1 EACCES (Permission denied)
+dup(2)                                  = 3
+fcntl(3, F_GETFL)                       = 0x8002 (flags O_RDWR|O_LARGEFILE)
+fstat(3, {st_mode=S_IFCHR|0600, st_rdev=makedev(0x88, 0), ...}) = 0
+write(3, "Permission error: Permission den"..., 36) = 36
+close(3)                                = 0
+exit_group(1)                           = ?
++++ exited with 1 +++

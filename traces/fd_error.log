@@ -1,0 +1,40 @@
+execve("./test_programs/fd_error", ["./test_programs/fd_error"], 0x7ffd9dcb6bd0 /* 57 vars */) = 0
+brk(NULL)                               = 0x55a372887000
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7fcc938cc000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=114830, ...}) = 0
+mmap(NULL, 114830, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7fcc938af000
+close(3)                                = 0
+openat(AT_FDCWD, "/usr/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\340\241\2\0\0\0\0\0"..., 832) = 832
+pread64(3, "\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0"..., 840, 64) = 840
+fstat(3, {st_mode=S_IFREG|0755, st_size=2014248, ...}) = 0
+pread64(3, "\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0"..., 840, 64) = 840
+mmap(NULL, 2055568, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7fcc936b9000
+mmap(0x7fcc936e1000, 1474560, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x28000) = 0x7fcc936e1000
+mmap(0x7fcc93849000, 339968, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x190000) = 0x7fcc93849000
+mmap(0x7fcc9389c000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1e3000) = 0x7fcc9389c000
+mmap(0x7fcc938a2000, 52624, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7fcc938a2000
+close(3)                                = 0
+mmap(NULL, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7fcc936b6000
+arch_prctl(ARCH_SET_FS, 0x7fcc936b6740) = 0
+set_tid_address(0x7fcc936b6d68)         = 151530
+set_robust_list(0x7fcc936b6a20, 24)     = 0
+rseq({cpu_id_start=0, cpu_id=RSEQ_CPU_ID_UNINITIALIZED, rseq_cs=NULL, flags=0, node_id=0, mm_cid=0, slice_ctrl={request=0, granted=0, __reserved=0}, __reserved=0}, 33, 0, 0x53053053) = 0
+mprotect(0x7fcc9389c000, 16384, PROT_READ) = 0
+mprotect(0x55a36914a000, 4096, PROT_READ) = 0
+mprotect(0x7fcc9390b000, 8192, PROT_READ) = 0
+prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+getrandom("\x67\xc2\x88\x17\x37\xf1\x88\x0d", 8, GRND_NONBLOCK) = 8
+munmap(0x7fcc938af000, 114830)          = 0
+read(999, 0x7ffc9331a170, 20)           = -1 EBADF (Bad file descriptor)
+dup(2)                                  = 3
+fcntl(3, F_GETFL)                       = 0x8002 (flags O_RDWR|O_LARGEFILE)
+brk(NULL)                               = 0x55a372887000
+brk(0x55a3728a8000)                     = 0x55a3728a8000
+fstat(3, {st_mode=S_IFCHR|0600, st_rdev=makedev(0x88, 0), ...}) = 0
+write(3, "File descriptor error: Bad file "..., 43) = 43
+close(3)                                = 0
+exit_group(1)                           = ?
++++ exited with 1 +++

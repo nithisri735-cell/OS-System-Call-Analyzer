@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>OS System Call Analyzer</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <header>
+
+        <h1>OS System Call Analyzer</h1>
+
+        <p>
+            System Call Activity and Fault Analysis Dashboard
+        </p>
+
+    </header>
+
+
+    <!-- PROGRAM SELECTION -->
+
+    <section class="panel">
+
+        <h2>Run System Call Analysis</h2>
+
+        <p>
+            Select a test program and run the system call analyzer.
+        </p>
+
+
+        <div class="control">
+
+            <select id="program">
+
+                <option value="normal">
+                    Normal Program
+                </option>
+
+                <option value="file_error">
+                    File Error
+                </option>
+
+                <option value="permission_error">
+                    Permission Error
+                </option>
+
+                <option value="fd_error">
+                    Bad File Descriptor
+                </option>
+
+            </select>
+
+
+            <button onclick="runAnalysis()">
+                Run Analysis
+            </button>
+            <a href="/generate-report" class="report-button">
+                Generate Report
+            </a>
+
+        </div>
+
+
+        <p id="status"></p>
+
+    </section>
+
+
+    <!-- SUMMARY CARDS -->
+
+    <section class="cards">
+
+
+        <div class="card">
+
+            <h3>Total System Calls</h3>
+
+            <div class="number"
+                 id="totalCalls">
+
+                {{ analysis.total_system_calls }}
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Successful Calls</h3>
+
+            <div class="number"
+                 id="successfulCalls">
+
+                {{ analysis.successful_calls }}
+
+            </div>
+
+        </div>
+
+
+        <div class="card fault-card">
+
+            <h3>Total Faults</h3>
+
+            <div class="number"
+                 id="totalFaults">
+
+                {{ analysis.total_faults }}
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- SYSTEM CALL TABLE -->
+
+    <section class="panel">
+
+        <h2>System Call Frequency</h2>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        System Call
+                    </th>
+
+                    <th>
+                        Count
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="systemCallTable">
+
+                {% for syscall, count in
+                analysis.system_call_frequency.items() %}
+
+                <tr>
+
+                    <td>
+                        {{ syscall }}
+                    </td>
+
+                    <td>
+                        {{ count }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </section>
+    <section class="panel">
+
+        <h2>System Call Activity Chart</h2>
+    
+        <div id="systemCallChart"></div>
+    
+    </section>
+
+    <!-- FAULT TABLE -->
+
+    <section class="panel">
+
+        <h2>Fault Frequency</h2>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Error Code
+                    </th>
+
+                    <th>
+                        Count
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="faultTable">
+
+                {% for error, count in
+                analysis.fault_frequency.items() %}
+
+                <tr class="fault-row">
+
+                    <td>
+                        {{ error }}
+                    </td>
+
+                    <td>
+                        {{ count }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </section>
+    <section class="panel">
+
+        <h2>Fault Distribution Chart</h2>
+    
+        <div id="faultChart"></div>
+    
+    </section>
+
+    <!-- FAULT DETAILS -->
+
+    <section class="panel">
+
+        <h2>Fault Details</h2>
+
+
+        <div id="faultDetails">
+
+            {% for fault in analysis.faults %}
+
+            <div class="fault">
+
+                <h3>
+                    {{ fault.error }}
+                    -
+                    {{ fault.description }}
+                </h3>
+
+                <p>
+
+                    <strong>
+                        System Call:
+                    </strong>
+
+                    {{ fault.syscall }}
+
+                </p>
+
+
+                <p>
+
+                    <strong>
+                        Trace Line:
+                    </strong>
+
+                    {{ fault.line }}
+
+                </p>
+
+
+                <p class="trace">
+
+                    {{ fault.trace }}
+
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <footer>
+
+        <p>
+            OS Mini Project |
+            System Call Activity and Fault Analyzer
+        </p>
+
+    </footer>
+
+
+</div>
+
+
+<script src="{{ url_for('static',
+filename='script.js') }}">
+</script>
+
+</body>
+
+</html>
