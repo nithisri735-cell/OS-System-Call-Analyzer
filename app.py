@@ -56,9 +56,8 @@ def run_analysis():
     try:
         result = subprocess.run(
             ["strace", "-o", trace_file, executable],
-            cwd=BASE_DIR,
+            cwd=os.path.join(BASE_DIR, "test_programs"),
             capture_output=True,
-            text=True,
             timeout=10,
             check=False
         )
@@ -87,8 +86,8 @@ def run_analysis():
         return jsonify({
             "success": True,
             "program": program_name,
-            "output": result.stderr
-        })
+            "output": result.stderr.decode("utf-8", errors="replace")
+})
 
     except subprocess.TimeoutExpired:
         return jsonify({

@@ -18,7 +18,12 @@ RUN gcc test_programs/normal.c -o test_programs/normal \
     && gcc test_programs/file_error.c -o test_programs/file_error \
     && gcc test_programs/permission_error.c -o test_programs/permission_error \
     && gcc test_programs/fd_error.c -o test_programs/fd_error \
+    && chmod 000 test_programs/protected.txt \
+    && useradd --create-home appuser \
+    && chown -R appuser:appuser /app \
     && chmod 000 test_programs/protected.txt
+
+USER appuser
 
 EXPOSE 5000
 
